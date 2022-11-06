@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>KOPILEN - зручна копілка для точного підрахунку грошенят</title>
+	<style>
+		/* http://meyerweb.com/eric/tools/css/reset/ 
+		   v2.0 | 20110126
+		   License: none (public domain)
+		*/
+
+		html, body, div, span, applet, object, iframe,
+		h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+		a, abbr, acronym, address, big, cite, code,
+		del, dfn, em, img, ins, kbd, q, s, samp,
+		small, strike, strong, sub, sup, tt, var,
+		b, u, i, center,
+		dl, dt, dd, ol, ul, li,
+		fieldset, form, label, legend,
+		table, caption, tbody, tfoot, thead, tr, th, td,
+		article, aside, canvas, details, embed, 
+		figure, figcaption, footer, header, hgroup, 
+		menu, nav, output, ruby, section, summary,
+		time, mark, audio, video {
+			margin: 0;
+			padding: 0;
+			border: 0;
+			font-size: 100%;
+			font: inherit;
+			vertical-align: baseline;
+		}
+		/* HTML5 display-role reset for older browsers */
+		article, aside, details, figcaption, figure, 
+		footer, header, hgroup, menu, nav, section {
+			display: block;
+		}
+		body {
+			line-height: 1;
+		}
+		ol, ul {
+			list-style: none;
+		}
+		blockquote, q {
+			quotes: none;
+		}
+		blockquote:before, blockquote:after,
+		q:before, q:after {
+			content: '';
+			content: none;
+		}
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+
+
+		/* ======================================== */
+
+		body{
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+			color: #333;
+			background: #424242;
+			font-size:  15px;
+			line-height:  1.5;
+		}
+
+		header, nav, footer, .info, .categoryInfo{
+			max-width: 700px;
+			margin: 0 auto;
+		}
+
+		header{
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			font-size: 1.5rem;
+			justify-content: space-between;
+			font-weight: bold;
+			background: #08121B;
+			color: #f1f1f1;
+			border-radius: 10px 10px 0 0;
+			margin: 0 auto;
+		}
+
+		header h3:first-child{
+			font-weight: 900;
+			text-transform: uppercase;
+			padding: 20px 0 20px 20px;
+		}
+
+		nav{
+			display: flex;
+			align-items: center;
+			background: #DFF6D4;
+			border-bottom: 1px solid #C5EDB1;
+			font-size: 0.8rem;
+		}
+
+		nav > a{
+			flex: 1;
+			text-decoration: none;
+			background: #DFF6D4;
+			color: #20410F;
+			text-align: center;
+			padding: 10px 0;
+			-moz-user-select: none;
+			-khtml-user-select: none;
+			user-select: none;
+			cursor: pointer;
+		}
+
+		nav > a:hover{
+			background: #C6EFB3;
+		}
+
+		strong{
+			font-weight: bold;
+		}
+		
+		#allTotal{
+			padding: 20px 20px 20px 0;
+		}
+
+		.active{
+			color: #E2F6D8;
+			background: #499822;
+			border-bottom: 1px solid #3D7E1C;
+		}
+		.active:hover{
+			color: #E2F6D8;
+			background: #499822;
+			border-bottom: 1px solid #3D7E1C;
+			cursor: default;
+		}
+
+
+		.info{
+			background: #fff;
+			border-radius: 0 0 10px 10px;
+			padding-bottom: 20px;
+		}
+
+		.info > ul{
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+
+		}
+
+		.info > ul > li{
+			flex-basis: 33%;
+			padding: 10px 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 0.8rem;
+		}
+
+		.minus{
+			color: red;
+			font-weight: 900;
+			font-size: 1rem;
+			cursor: pointer;
+			width: 20px;
+			height: 20px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding-bottom: 3px;
+			border-radius: 2px;
+			-moz-user-select: none;
+			-khtml-user-select: none;
+			user-select: none;
+		}
+
+		.minus:hover{
+			background: red;
+			color: #fff;
+		}
+
+		.minus:active{
+			background: darkred;
+			color: #fff;
+		}
+
+
+		.plus{
+			color: green;
+			font-weight: 900;
+			font-size: 1rem;
+			cursor: pointer;
+			width: 20px;
+			height: 20px;
+			display: flex;
+			overflow: hidden;
+			align-items: center;
+			justify-content: center;
+			padding-bottom: 3px;
+			border-radius: 2px;
+			-moz-user-select: none;
+			-khtml-user-select: none;
+			user-select: none;
+		}
+
+		.plus:hover{
+			color: #fff;
+			background: green;
+		}
+		.plus:active{
+			color: #fff;
+			background: darkgreen;
+		}
+
+		.countMenu{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.count{
+			width: 80px;
+			text-align: center;
+		}
+
+		.categoryInfo{
+			background: #fff;
+			text-align: center;
+			padding-bottom: 0;
+			padding: 20px 0;
+
+		}
+
+		.categoryInfo h1{
+			font-weight: bold;
+			font-size: 1.2rem;
+		}
+
+		#walletTotal{
+			font-weight: 900;
+			font-size: 2rem;
+			margin: 0;
+			padding: 0;
+			color: darkgreen;
+		}
+
+		footer{
+			background: #424242;
+			color:  #fff;
+			text-align: center;
+			font-size: 0.8rem;
+			padding: 10px 0;
+		}
+
+	</style>
+</head>
+<body>
+
+	
+	<header>
+		<h3 style="cursor: pointer;" onclick="location.href = '/'">KOPILEN</h3>
+		<h3 id="allTotal">$0</h3>
+	</header>
+
+	<nav class="navbar"></nav>
+
+	<section class="categoryInfo">
+		<h1 id="walletTitle"></h1>
+		<h2 id="walletTotal"></h2>
+	</section>
+
+	<section class="info">
+		<ul id="infoList">
+			
+	</section>
+
+	<footer>
+		Copyright &copy; <span id="date"></span> By Eugene Roff
+	</footer>
+
+
+	<script type="text/javascript">
+
+
+		class App{
+
+			constructor() {
+
+				// post date;
+				const date = document.getElementById('date');
+				const today = new Date();
+				date.textContent = today.getFullYear();
+
+				// check localStorage data
+				const data = localStorage.getItem('data');
+
+				if(data) {
+					this.data = data;
+				} else {
+
+					// create data list and put that to localStorage
+					const wallet = [{
+								title: 'гривень',
+								short: 'грн',
+								nominal: [1,2,5,10,20,50,100,200,500,1000],
+								count: [0,0,0,0,0,0,0,0,0,0]
+							},{
+								title: 'долларів',
+								short: 'usd',
+								nominal: [1,2,5,10,20,50,100],
+								count: [0,0,0,0,0,0,0]
+							},{
+								title: 'євро',
+								short: 'eur',
+								nominal: [5,10,20,50,100,200,500],
+								count: [0,0,0,0,0,0,0]
+							},{
+								title: 'фунтов',
+								short: 'fnt',
+								nominal: [5,10,20,50,100],
+								count: [0,0,0,0,0]
+							},{
+								title: 'копійок',
+								short: 'грн',
+								nominal: [0.10, 0.50, 1, 2, 5, 10],
+								count: [0,0,0,0,0,0]
+							}];
+
+					window.localStorage.setItem('data', JSON.stringify(wallet));
+					this.data = localStorage.getItem('data');
+				}
+
+
+				this.categories = ["Гривні", "Доллари", "Євро", "Фунти", "Копійки"];
+
+				// generating navigation
+				this.generateNavbar();
+
+
+				const item = JSON.parse(data);
+				const walletTitle = document.getElementById('walletTitle');
+				walletTitle.textContent = 'Кількість '+ item[0].title+":";
+
+				this.getTotalOfCategory(item[0]);
+
+
+				this.generateInfoList(0);
+
+				this.updateTotal(); }
+			generateNavbar(){
+				const nav = document.querySelector('.navbar');
+
+				for(let i = 0; i < this.categories.length; i++) {
+					
+					// create link to wallet page
+					const createNavLink = document.createElement('a');
+
+					createNavLink.textContent = this.categories[i];
+
+					// append this link to wrapper
+					nav.append(createNavLink);
+
+					// Show information about wallet when link was clicked
+					createNavLink.addEventListener('click', () => {
+						
+						
+						const data = JSON.parse(this.data);
+						const wallet = data[i];
+
+						const walletTitle = document.getElementById('walletTitle');
+						walletTitle.textContent = "Кількість "+wallet.title+":";
+
+						// get total of category
+						this.getTotalOfCategory(wallet);
+
+						// clear info list and rerender
+
+						const infoList = document.getElementById('infoList');
+						infoList.textContent = '';
+
+						// generate infoList
+						this.generateInfoList(i);
+					});
+
+
+				}}
+			createTitles(){
+				const titles = ['Номінал', 'Кількість', 'Сумма'];
+				const wrapper = document.getElementById('infoList');
+
+				for(let i = 0; i < 3; i++) {
+					const li = document.createElement('li');
+					const strong = document.createElement('strong');
+					strong.textContent = titles[i];
+					li.append(strong);
+
+					wrapper.append(li);
+				}}
+			generateInfoList(item){
+				// create titles
+				this.createTitles();
+				const getData = JSON.parse(this.data);
+				const wallet = getData[item];
+				const wrapper = document.getElementById('infoList');
+
+				for(let i = 0; i < wallet.nominal.length; i++){
+					// create nominal
+					const nominal = document.createElement('li');
+					nominal.textContent = wallet.nominal[i]+' '+wallet.short;
+					wrapper.append(nominal);
+
+					// create count wrapper
+					const countWrapper = document.createElement('li');
+					const countUlWrapper = document.createElement('ul');
+					countUlWrapper.setAttribute('class', 'countMenu');
+
+					// create minus
+					const countMinus = document.createElement('li');
+					countMinus.setAttribute('class', 'minus');
+					countMinus.textContent = '-';
+					countMinus.addEventListener('click', () => {
+						const newCount = this.minus(wallet.count[i], i, item);
+						wallet.count[i] = newCount;
+
+						window.localStorage.setItem('data', JSON.stringify(getData));
+						this.data = window.localStorage.getItem('data');
+
+						// update total of category;
+						this.getTotalOfCategory(wallet);
+
+						//update total of item
+						this.updateTotalOfItem(wallet, i);
+
+						// update all total 
+						this.updateTotal();
+
+						countCount.textContent = newCount + ' шт.';
+					});
+
+					countUlWrapper.append(countMinus);
+
+					// createCount
+					const countCount = document.createElement('li');
+					countCount.setAttribute('class', 'count');
+					countCount.textContent = wallet.count[i] + ' шт.';
+					countUlWrapper.append(countCount);
+
+					// create plus
+					const countPlus = document.createElement('li');
+					countPlus.setAttribute('class', 'plus');
+					countPlus.textContent = '+';
+
+					countPlus.addEventListener('click', () => {
+						const newCount = this.plus(wallet.count[i], i, item);
+						wallet.count[i] = newCount;
+
+						window.localStorage.setItem('data', JSON.stringify(getData));
+						this.data = window.localStorage.getItem('data');
+
+						// update total of category;
+						this.getTotalOfCategory(wallet);
+
+						//update total of item
+						this.updateTotalOfItem(wallet, i);
+
+						// update all total 
+						this.updateTotal();
+
+
+						countCount.textContent = newCount + ' шт.';
+					});
+
+					countUlWrapper.append(countPlus);
+
+					// append count UL with LI's to the count li wrapper
+					countWrapper.append(countUlWrapper);
+					wrapper.append(countWrapper);
+
+					// create total
+					const count = document.createElement('li');
+					count.setAttribute('id', `total${i}`);
+
+					count.textContent = new Intl.NumberFormat('en-US', {}).format((wallet.nominal[i] * wallet.count[i])) + ' ' + wallet.short;
+					wrapper.append(count);
+
+				}}
+			getTotalOfCategory(item){
+
+				const walletTotal = document.getElementById('walletTotal');
+				let total = 0;
+
+				for(let i = 0; i < item.nominal.length; i++){
+					const sum = item.nominal[i] * item.count[i];
+					total += sum;
+				}
+
+				walletTotal.textContent = new Intl.NumberFormat('en-US', {}).format(total)+' '+item.short; }
+			minus(count, iterator, category){
+				if(count > 0){
+					const newCount = count - 1;
+					window.localStorage.removeItem('data');
+
+					return newCount;
+				}
+
+				return count;}
+			plus(count, iterator, category){ 
+				const newCount = count + 1;
+				window.localStorage.removeItem('data');
+
+				return newCount;}
+			updateTotalOfItem(item, i) {
+				const countItem = document.getElementById('total'+i);
+				countItem.textContent = new Intl.NumberFormat('en-US', {}).format((item.nominal[i] * item.count[i]))+' '+item.short;}
+			updateTotal() {
+				
+				const data = JSON.parse(this.data);
+
+				let total = 0;
+				const newTotal = total / 40;
+					
+				for(let i = 0; i < data.length; i++) {
+					
+					for(let k = 0; k < data[i].nominal.length; k++){
+						const value = data[i].nominal[k];
+						const valueCount = data[i].count[k];
+
+						switch (i){
+							case 1:
+								total += (value * valueCount) * 40;
+								break;
+
+							case 2:
+								total += (value * valueCount) * 39.5;
+								break;
+
+							case 3:
+								total += (value * valueCount) * 42.69;
+								break;
+
+							default:
+								total += value * valueCount;
+						}
+					}
+				}
+
+
+				const totalObject = document.getElementById('allTotal');
+				totalObject.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format((total / 40));}
+
+		}
+
+		const app = new App();
+
+	</script>
+</body>
+</html>
